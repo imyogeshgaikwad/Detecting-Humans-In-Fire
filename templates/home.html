@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Detection Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <main class="main-content">
+        <div class="upload-container">
+            <div class="upload-card">
+                <div class="card-header">
+                    <h2>Image Analysis</h2>
+                    <p>Upload an image to detect humans in fire situations</p>
+                </div>
+
+                <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                    <div class="upload-zone">
+                        <label for="fileInput" class="upload-label">
+                            <div class="upload-content">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3>Drop your image here</h3>
+                                <p class="upload-subtext">or click to browse files</p>
+                                <span class="file-types">JPG, PNG, WEBP supported</span>
+                            </div>
+                        </label>
+                        <input type="file" id="fileInput" name="image" accept="image/*" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Analyze Image
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="{{ url_for('static', filename='javascript/navbar.js') }}"></script>
+</body>
+
+</html>
