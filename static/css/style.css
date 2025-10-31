@@ -1,3 +1,8 @@
+*{
+    margin: 0;
+
+}
+
 :root {
   /* Color Palette */
   --primary: #E63946;      /* Alert red */
