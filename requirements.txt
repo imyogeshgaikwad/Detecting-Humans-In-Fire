@@ -1,5 +1,9 @@
-Flask
 tensorflow
-plt
-
-YOLOv5
+torch
+torchvision
+ultralytics        # YOLOv5 / YOLOv8 support
+scikit-learn
+numpy
+pandas
+matplotlib
+seaborn
