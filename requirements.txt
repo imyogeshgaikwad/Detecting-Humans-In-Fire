@@ -1,0 +1,5 @@
+Flask
+tensorflow
+plt
+
+YOLOv5
