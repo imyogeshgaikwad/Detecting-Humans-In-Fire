@@ -1,50 +1,77 @@
 import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras import layers, models
-import matplotlib.pyplot as plt
+import os
 
-# Load training dataset
-train_ds = tf.keras.preprocessing.image_dataset_from_directory(
-    "dataset/train",
-    image_size=(180, 180),
-    batch_size=32
+# Dataset path
+base_dir = "datasets"
+
+train_dir = os.path.join(base_dir, "train")
+val_dir = os.path.join(base_dir, "val")
+
+# In case you only have /fire images for now, we’ll reuse them
+# and later you can add /nofire for better classification
+if not os.path.exists(val_dir):
+    os.makedirs(val_dir, exist_ok=True)
+    os.system(f"cp -r {train_dir}/fire {val_dir}/fire")
+
+# Parameters
+IMG_SIZE = (224, 224)
+BATCH_SIZE = 16
+EPOCHS = 10
+
+# Preprocessing and augmentation
+datagen = ImageDataGenerator(
+    rescale=1./255,
+    validation_split=0.2,   # Split training data internally if needed
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True
 )
 
-# Load test dataset
-val_ds = tf.keras.preprocessing.image_dataset_from_directory(
-    "dataset/test",
-    image_size=(180, 180),
-    batch_size=32
+train_generator = datagen.flow_from_directory(
+    base_dir,
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode="binary",
+    subset="training"
 )
 
-# Normalize images (0–1)
-normalization_layer = layers.Rescaling(1./255)
-train_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
-val_ds = val_ds.map(lambda x, y: (normalization_layer(x), y))
+val_generator = datagen.flow_from_directory(
+    base_dir,
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode="binary",
+    subset="validation"
+)
 
-# Build model
+# Model definition (simple CNN)
 model = models.Sequential([
-    layers.Conv2D(32, (3,3), activation='relu', input_shape=(180, 180, 3)),
-    layers.MaxPooling2D(2,2),
-    layers.Conv2D(64, (3,3), activation='relu'),
-    layers.MaxPooling2D(2,2),
-    layers.Conv2D(128, (3,3), activation='relu'),
-    layers.MaxPooling2D(2,2),
+    layers.Conv2D(32, (3, 3), activation="relu", input_shape=(224, 224, 3)),
+    layers.MaxPooling2D(2, 2),
+    layers.Conv2D(64, (3, 3), activation="relu"),
+    layers.MaxPooling2D(2, 2),
+    layers.Conv2D(128, (3, 3), activation="relu"),
+    layers.MaxPooling2D(2, 2),
     layers.Flatten(),
-    layers.Dense(128, activation='relu'),
-    layers.Dense(len(train_ds.class_names), activation='softmax')
+    layers.Dense(128, activation="relu"),
+    layers.Dropout(0.5),
+    layers.Dense(1, activation="sigmoid")  # Binary output
 ])
 
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+model.compile(optimizer="adam",
+              loss="binary_crossentropy",
+              metrics=["accuracy"])
 
-# Train model
-history = model.fit(train_ds, validation_data=val_ds, epochs=10)
-
-# Evaluate on test data
-model.evaluate(val_ds)
+# Train
+history = model.fit(
+    train_generator,
+    epochs=EPOCHS,
+    validation_data=val_generator
+)
 
 # Save model
-model.save("image_classifier_model.h5")
+os.makedirs("model", exist_ok=True)
+model.save("model/fire_model.h5")
 
-print("Training complete! Classes:", train_ds.class_names)
+print("✅ Model training complete! Saved as model/fire_model.h5")

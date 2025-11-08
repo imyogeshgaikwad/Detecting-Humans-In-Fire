@@ -1,9 +1,22 @@
-tensorflow
-torch
-torchvision
-ultralytics        # YOLOv5 / YOLOv8 support
-scikit-learn
-numpy
-pandas
-matplotlib
-seaborn
+# --- Core Computer Vision ---
+opencv-python        # for frame capture + image ops
+scikit-image         # for HOG feature extraction
+scikit-learn         # for SVM classifier
+numpy                # matrix ops
+matplotlib           # optional visualization (plt)
+Pillow               # image I/O
+
+# --- Dataset & Utils ---
+roboflow             # download Roboflow fire dataset
+pandas               # data handling
+tqdm                 # progress bars
+
+# --- Flask App ---
+Flask
+flask-cors           # for frontend requests
+gunicorn             # optional (production server)
+
+# --- Optional / Enhancement ---
+joblib               # to save/load trained models
+python-dotenv        # for env vars (like Roboflow API key)
+requests             # for any network ops (if needed)
