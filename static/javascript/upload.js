@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Analyzing...`;
 
       // Send image to backend Flask route
-      const response = await fetch("/analyze", {
+      const response = await fetch("/fire-model", {
         method: "POST",
         body: formData,
       });
