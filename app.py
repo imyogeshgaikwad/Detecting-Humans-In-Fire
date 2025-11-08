@@ -1,72 +1,78 @@
-# from flask import Flask
 from flask import Flask, request, jsonify, render_template
 from PIL import Image
 import numpy as np
-
 from tensorflow.keras.models import load_model
-# Create the Flask app
-app = Flask(__name__)
-# Pages: signup login dashboard upload-picture
-# Define a route
-from flask import Flask, render_template
+from tensorflow.keras.applications.efficientnet import preprocess_input
 
+# -----------------------------
+# Initialize Flask app
+# -----------------------------
 app = Flask(__name__)
 
+# -----------------------------
+# Load model at startup
+# -----------------------------
+MODEL_PATH = "model/fire_model.h5"
+IMG_SIZE = (224, 224)  # must match training
+model = load_model(MODEL_PATH)
+
+# -----------------------------
+# Routes
+# -----------------------------
 @app.route('/')
 def home():
     return render_template('home.html')
 
-# Define a route
+
 @app.route('/login')
 def login():
-    return "LOGGIN IN"
+    return "LOGGING IN"
 
 
-@app.route('/analyze', methods=['POST'])
-def analyze_frame():
-    file = request.files['image']
-    img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_COLOR)
-
-    fire_result = detect_fire(img)
-    human_result = detect_humans(img)
-
-    alert = fire_result["has_fire"] and len(human_result.get("persons", [])) > 0
-
-    return jsonify({
-        "alert": alert,
-        "fire_label": fire_result["label"],
-        "human_detected": len(human_result.get("persons", [])) > 0
-    })
-
-# Load the trained fire model once at startup
-model = load_model("model/fire_model.h5")
-
-IMG_SIZE = (224, 224)
-
-def preprocess_image(file):
-    # Open uploaded file
-    img = Image.open(file).convert("RGB")
-    img = img.resize(IMG_SIZE)
-    img_array = np.array(img) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
-    return img_array
-
-@app.route("/fire-model", methods=["POST"])
-def model_test():
+@app.route('/fire-model', methods=["POST"])
+def fire_model():
+    """
+    Endpoint for fire detection.
+    Returns JSON: fire_detected (bool), confidence (%)
+    """
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
 
     file = request.files["image"]
     img_array = preprocess_image(file)
 
-    pred = model.predict(img_array)[0][0]
+    # Predict
+    pred = float(model.predict(img_array)[0][0])
+
+    # Flip probability to match correct class (fire vs no-fire)
+    fire_prob = 1 - pred
+
     result = {
-        "fire_detected": bool(pred > 0.5),
-        "confidence": float(pred*100)
+        "fire_detected": fire_prob > 0.5,
+        "confidence": round(fire_prob * 100, 2)
     }
 
     return jsonify(result)
 
-# Run the app
+
+# -----------------------------
+# Helper function
+# -----------------------------
+def preprocess_image(file, img_size=IMG_SIZE):
+    """
+    Open uploaded file, resize to model input size,
+    preprocess with EfficientNet preprocessing, add batch dimension.
+    """
+    img = Image.open(file).convert("RGB")
+    img = img.resize(img_size)
+    img_array = np.array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array = preprocess_input(img_array)
+    return img_array
+
+
+# -----------------------------
+# Run server
+# -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)

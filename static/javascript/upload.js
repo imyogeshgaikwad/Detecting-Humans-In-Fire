@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
 
       // Show the prediction result
-      alert(`Result: ${result.label}\nConfidence: ${result.confidence}%`);
+      alert(`Result: ${result.fire_detected}\nConfidence: ${result.confidence}%`);
     } catch (error) {
       console.error(error);
       alert("Error analyzing the image. Check the console for details.");
