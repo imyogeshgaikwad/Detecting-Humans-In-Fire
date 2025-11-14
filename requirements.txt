@@ -1,22 +1,18 @@
-# --- Core Computer Vision ---
-opencv-python        # for frame capture + image ops
-scikit-image         # for HOG feature extraction
-scikit-learn         # for SVM classifier
-numpy                # matrix ops
-matplotlib           # optional visualization (plt)
-Pillow               # image I/O
+numpy<2
+opencv-python
+scikit-image<0.20
+scikit-learn
+matplotlib
+Pillow
 
-# --- Dataset & Utils ---
-roboflow             # download Roboflow fire dataset
-pandas               # data handling
-tqdm                 # progress bars
+roboflow
+pandas
+tqdm
 
-# --- Flask App ---
 Flask
-flask-cors           # for frontend requests
-gunicorn             # optional (production server)
+flask-cors
+gunicorn
 
-# --- Optional / Enhancement ---
-joblib               # to save/load trained models
-python-dotenv        # for env vars (like Roboflow API key)
-requests             # for any network ops (if needed)
+joblib
+python-dotenv
+requests
