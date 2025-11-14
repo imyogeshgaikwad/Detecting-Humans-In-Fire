@@ -1,5 +1,7 @@
 // static/javascript/train.js
 
+import { showNotification } from "./notification.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("uploadForm");
   const fileInput = document.getElementById("fileInput");
@@ -23,7 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
       button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Analyzing...`;
 
       // Send image to backend Flask route
-      const response = await fetch("/fire-model", {
+      // const response = await fetch("/fire-model", {
+      const response = await fetch("/detect", {
         method: "POST",
         body: formData,
       });
@@ -33,7 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
 
       // Show the prediction result
-      alert(`Result: ${result.fire_detected}\nConfidence: ${result.confidence}%`);
+      // alert(`Result: ${result.fire_detected}\nConfidence: ${result.confidence}%`);
+      showNotification(result)
     } catch (error) {
       console.error(error);
       alert("Error analyzing the image. Check the console for details.");
