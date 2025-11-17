@@ -1,4 +1,12 @@
+// Detection thresholds (easy to configure)
+const FIRE_THRESHOLD = 90;
+const HUMAN_THRESHOLD = 70;
+
 export function showNotification(res) {
+  // Apply thresholds
+  const fireDetected = res.fire_confidence >= FIRE_THRESHOLD;
+  const humanDetected = res.human_confidence >= HUMAN_THRESHOLD;
+  
   // Remove any existing notification
   const existing = document.getElementById('detection-notification');
   if (existing) existing.remove();
@@ -23,14 +31,11 @@ export function showNotification(res) {
   `;
 
   // Determine alert level
-  const fireDetected = res.fire_detected;
-  const humanDetected = res.human_detected;
   const criticalAlert = fireDetected && humanDetected;
-  
   let alertColor = '#667eea';
   let alertIcon = '🔍';
   let alertTitle = 'Detection Results';
-  
+
   if (criticalAlert) {
     alertColor = '#ef4444';
     alertIcon = '🚨';
@@ -46,57 +51,42 @@ export function showNotification(res) {
   }
 
   notification.innerHTML = `
-    <div style="background: ${alertColor}; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="background: ${alertColor}; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
       <div style="display: flex; align-items: center; gap: 12px;">
-        <span style="font-size: 28px;">${alertIcon}</span>
-        <span style="font-size: 18px; font-weight: bold;">${alertTitle}</span>
+        <span style="font-size: 24px;">${alertIcon}</span>
+        <span style="font-weight: bold; font-size: 18px;">${alertTitle}</span>
       </div>
-      <button onclick="this.closest('#detection-notification').remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
+      <button onclick="this.closest('#detection-notification').remove()" 
+              style="background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; padding: 0;">
         ×
       </button>
     </div>
     
-    <div style="padding: 20px; background: white; color: #1f2937;">
-      <!-- Fire Detection -->
+    <div style="padding: 20px;">
       <div style="margin-bottom: 16px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
-            🔥 Fire
-          </span>
-          <span style="font-size: 20px; font-weight: bold; color: ${fireDetected ? '#ef4444' : '#6b7280'};">
-            ${res.fire_confidence}%
-          </span>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="font-size: 20px;">🔥</span>
+          <span style="font-weight: 600;">Fire</span>
         </div>
-        <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
-          <div style="background: ${fireDetected ? '#ef4444' : '#9ca3af'}; height: 100%; width: ${res.fire_confidence}%; transition: width 0.5s ease-out;"></div>
-        </div>
-        <div style="margin-top: 4px; font-size: 12px; color: #6b7280;">
+        <div style="font-size: 14px; opacity: 0.9;">
           ${fireDetected ? '⚠️ Fire present' : '✓ No fire detected'}
         </div>
       </div>
 
-      <!-- Human Detection -->
-      <div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
-            👤 Human
-          </span>
-          <span style="font-size: 20px; font-weight: bold; color: ${humanDetected ? '#3b82f6' : '#6b7280'};">
-            ${res.human_confidence}%
-          </span>
+      <div style="margin-bottom: ${criticalAlert ? '16px' : '0'};">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="font-size: 20px;">👤</span>
+          <span style="font-weight: 600;">Human</span>
         </div>
-        <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
-          <div style="background: ${humanDetected ? '#3b82f6' : '#9ca3af'}; height: 100%; width: ${res.human_confidence}%; transition: width 0.5s ease-out;"></div>
-        </div>
-        <div style="margin-top: 4px; font-size: 12px; color: #6b7280;">
+        <div style="font-size: 14px; opacity: 0.9;">
           ${humanDetected ? '⚠️ Human present' : '✓ No human detected'}
         </div>
       </div>
 
       ${criticalAlert ? `
-        <div style="margin-top: 16px; padding: 12px; background: #fee2e2; border-left: 4px solid #ef4444; border-radius: 4px;">
-          <div style="font-weight: bold; color: #991b1b; margin-bottom: 4px;">⚠️ Emergency Situation</div>
-          <div style="font-size: 13px; color: #7f1d1d;">Fire detected with human presence. Immediate action required!</div>
+        <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; margin-top: 16px;">
+          <div style="font-weight: bold; margin-bottom: 4px;">⚠️ Emergency Situation</div>
+          <div style="font-size: 13px; opacity: 0.95;">Fire detected with human presence. Immediate action required!</div>
         </div>
       ` : ''}
     </div>
@@ -120,7 +110,6 @@ export function showNotification(res) {
     }
   `;
   document.head.appendChild(style);
-
   document.body.appendChild(notification);
 
   // Auto-remove after 8 seconds (or 12 for critical alerts)
