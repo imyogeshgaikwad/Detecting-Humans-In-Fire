@@ -23,5 +23,5 @@ def detect_fire(img):
     return {
         "has_fire": prediction == "fire",
         "label": prediction,
-        "confidence": 1.0  # placeholder – LinearSVC doesn’t output probas
+        "confidence": 1.0  
     }

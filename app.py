@@ -6,24 +6,18 @@ from tensorflow.keras.applications.efficientnet import preprocess_input
 from ultralytics import YOLO
 import os
 
-# -----------------------------
-# Initialize Flask app
-# -----------------------------
+
 app = Flask(__name__)
 
-# -----------------------------
-# Load models at startup
-# -----------------------------
+
 FIRE_MODEL_PATH = "model/fire_model.h5"
 IMG_SIZE = (224, 224)
 FIRE_THRESHOLD = 0.90
 
 fire_model = load_model(FIRE_MODEL_PATH)
-human_model = YOLO('yolov8n.pt')  # YOLO instead of your old model
+human_model = YOLO('yolov8n.pt')  
 
-# -----------------------------
-# Routes
-# -----------------------------
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -120,9 +114,7 @@ def human_model_route():
     return jsonify(result)
 
 
-# -----------------------------
-# Helper function
-# -----------------------------
+
 def preprocess_image(file, img_size=IMG_SIZE):
     """
     Open uploaded file, resize to model input size,
@@ -136,8 +128,6 @@ def preprocess_image(file, img_size=IMG_SIZE):
     return img_array
 
 
-# -----------------------------
-# Run server
-# -----------------------------
+
 if __name__ == '__main__':
     app.run(debug=True)

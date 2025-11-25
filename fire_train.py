@@ -70,12 +70,10 @@ class FireTrainer:
         print(f"💾 Model saved at: {path}")
 
 
-# -----------------------------
-# Usage
-# -----------------------------
+
 if __name__ == "__main__":
     trainer = FireTrainer(
-        train_dir="datasets/train",  # must contain 'fire' and 'nofire'
+        train_dir="datasets/train", 
         img_size=(224,224),
         batch_size=16,
         epochs=30
