@@ -6,14 +6,10 @@ from tensorflow.keras.applications.efficientnet import preprocess_input
 from ultralytics import YOLO
 import os
 
-# -----------------------------
-# Initialize Flask app
-# -----------------------------
+
 app = Flask(__name__)
 
-# -----------------------------
-# Load models at startup
-# -----------------------------
+
 FIRE_MODEL_PATH = "model/fire_model.h5"
 IMG_SIZE = (224, 224)
 FIRE_THRESHOLD = 0.90
@@ -21,9 +17,7 @@ FIRE_THRESHOLD = 0.90
 fire_model = load_model(FIRE_MODEL_PATH)
 human_model = YOLO('yolov8n.pt') 
 
-# -----------------------------
-# Routes
-# -----------------------------
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -63,34 +57,6 @@ def detect():
     return jsonify(result)
 
 
-    if "image" not in request.files:
-        return jsonify({"error": "No image uploaded"}), 400
-
-    file = request.files["image"]
-    
-    # Save temporarily for YOLO
-    temp_path = "temp_upload.jpg"
-    file.save(temp_path)
-    
-    # Predict with YOLO
-    results = human_model.predict(temp_path, classes=[0], conf=0.5, verbose=False)[0]
-    has_human = len(results.boxes) > 0
-    confidence = float(results.boxes[0].conf[0]) * 100 if has_human else 0.0
-    
-    # Cleanup
-    os.remove(temp_path)
-
-    result = {
-        "human_detected": has_human,
-        "confidence": round(confidence, 2)
-    }
-
-    return jsonify(result)
-
-
-# -----------------------------
-# Process image uploaded by user
-# -----------------------------
 def preprocess_image(file, img_size=IMG_SIZE):
 
     img = Image.open(file).convert("RGB")
@@ -101,8 +67,5 @@ def preprocess_image(file, img_size=IMG_SIZE):
     return img_array
 
 
-# -----------------------------
-# Run server
-# -----------------------------
 if __name__ == '__main__':
     app.run()

@@ -40,7 +40,7 @@ class FireTrainer:
 
     def _build_model(self):
         base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(*self.img_size,3))
-        base_model.trainable = False  # freeze base
+        base_model.trainable = False  
 
         model = models.Sequential([
             base_model,
