@@ -19,7 +19,7 @@ IMG_SIZE = (224, 224)
 FIRE_THRESHOLD = 0.90
 
 fire_model = load_model(FIRE_MODEL_PATH)
-human_model = YOLO('yolov8n.pt')  # YOLO instead of your old model
+human_model = YOLO('yolov8n.pt') 
 
 # -----------------------------
 # Routes
@@ -31,10 +31,7 @@ def home():
 
 @app.route('/detect', methods=["POST"])
 def detect():
-    """
-    Combined endpoint for fire and human detection.
-    Returns JSON with both detections.
-    """
+
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
 
@@ -66,35 +63,6 @@ def detect():
     return jsonify(result)
 
 
-@app.route('/fire-model', methods=["POST"])
-def fire_model_route():
-    """
-    Endpoint for fire detection.
-    Returns JSON: fire_detected (bool), confidence (%)
-    """
-    if "image" not in request.files:
-        return jsonify({"error": "No image uploaded"}), 400
-
-    file = request.files["image"]
-    img_array = preprocess_image(file)
-
-    pred = float(fire_model.predict(img_array)[0][0])
-    fire_prob = 1 - pred
-
-    result = {
-        "fire_detected": fire_prob >= FIRE_THRESHOLD,
-        "confidence": round(fire_prob * 100, 2)
-    }
-
-    return jsonify(result)
-
-
-@app.route('/human-model', methods=["POST"])
-def human_model_route():
-    """
-    Endpoint for Human detection using YOLO.
-    Returns JSON: human_detected (bool), confidence (%)
-    """
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
 
@@ -121,13 +89,10 @@ def human_model_route():
 
 
 # -----------------------------
-# Helper function
+# Process image uploaded by user
 # -----------------------------
 def preprocess_image(file, img_size=IMG_SIZE):
-    """
-    Open uploaded file, resize to model input size,
-    preprocess with EfficientNet preprocessing, add batch dimension.
-    """
+
     img = Image.open(file).convert("RGB")
     img = img.resize(img_size)
     img_array = np.array(img)
@@ -140,4 +105,4 @@ def preprocess_image(file, img_size=IMG_SIZE):
 # Run server
 # -----------------------------
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

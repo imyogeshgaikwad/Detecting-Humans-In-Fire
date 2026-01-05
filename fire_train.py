@@ -52,22 +52,18 @@ class FireTrainer:
         model.compile(optimizer=tf.keras.optimizers.Adam(1e-4),
                       loss="binary_crossentropy",
                       metrics=["accuracy"])
-        print("✅ Model built and compiled.")
         return model
 
     def train(self):
-        print("🚀 Training started on all images (no validation)...")
         self.model.fit(
             self.train_gen,
             epochs=self.epochs
         )
-        print("✅ Training finished.")
 
     def save(self):
         os.makedirs(self.model_dir, exist_ok=True)
         path = os.path.join(self.model_dir, self.model_name)
         self.model.save(path)
-        print(f"💾 Model saved at: {path}")
 
 
 # -----------------------------
@@ -75,7 +71,7 @@ class FireTrainer:
 # -----------------------------
 if __name__ == "__main__":
     trainer = FireTrainer(
-        train_dir="datasets/train",  # must contain 'fire' and 'nofire'
+        train_dir="datasets/train", 
         img_size=(224,224),
         batch_size=16,
         epochs=30

@@ -1,24 +1,12 @@
-const links = [
-  { title: "Home", link: "/" },
-  { title: "Login", link: "/login" },
-  { title: "About", link: "/about" },
-  { title: "Contact", link: "/contact" }
-];
 
-function showLinks() {
-  return links
-    .map(link => `<a class="nav-link" href="${link.link}">${link.title}</a>`)
-    .join("");
-}
 
 export function navbar() {
-    console.log("TESTING");
     
   const HTML = `
       <header class="site-header">
         <div class="header-content">
             <i class="fas fa-fire-alt"></i>
-            <h1>Fire Detection System</h1>
+            <h1>Detecting Humans In Fire</h1>
         </div>
     </header>
   `;
