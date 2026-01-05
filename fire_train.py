@@ -66,9 +66,7 @@ class FireTrainer:
         self.model.save(path)
 
 
-# -----------------------------
-# Usage
-# -----------------------------
+
 if __name__ == "__main__":
     trainer = FireTrainer(
         train_dir="datasets/train", 
