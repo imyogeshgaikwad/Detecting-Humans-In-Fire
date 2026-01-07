@@ -46,7 +46,6 @@ export function showNotification(res) {
     alertTitle = 'Human Detected';
   }
 
-  // Different alert if fire is detected and also if human is detected
   notification.innerHTML = `
     <div style="background: ${alertColor}; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
       <div style="display: flex; align-items: center; gap: 12px;">
@@ -89,7 +88,6 @@ export function showNotification(res) {
     </div>
   `;
 
-  // Add animation styles
   const style = document.createElement('style');
   style.textContent = `
     @keyframes slideIn {

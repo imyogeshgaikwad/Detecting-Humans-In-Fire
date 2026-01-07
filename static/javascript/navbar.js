@@ -18,5 +18,4 @@ export function navbar() {
   return HTML;
 }
 
-// Automatically render when imported
 navbar();
