@@ -11,7 +11,6 @@ export function navbar() {
     </header>
   `;
 
-  // auto-inject into <div id="navbar">
   const target = document.getElementById("navbar");
   if (target) target.innerHTML = HTML;
   else console.warn('No element with id="navbar" found');

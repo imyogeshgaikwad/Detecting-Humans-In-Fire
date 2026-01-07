@@ -1,4 +1,3 @@
-// Detection thresholds (easy to configure)
 const FIRE_THRESHOLD = 90;
 const HUMAN_THRESHOLD = 70;
 

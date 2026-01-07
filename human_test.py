@@ -12,7 +12,7 @@ class HumanTrainer:
   
         results = self.model.predict(
             image_path,
-            classes=[0],              # class 0 = person
+            classes=[0],              
             conf=self.conf_threshold,
             verbose=False
         )[0]
@@ -42,19 +42,15 @@ class HumanTrainer:
         print(f"Accuracy: {accuracy:.2f}% ({correct}/{total})\n")
 
 
-# --------------------------------------------------
-# Execution
-# --------------------------------------------------
+
 if __name__ == "__main__":
     detector = HumanTrainer(conf_threshold=0.5)
 
-    # Dataset containing humans
     detector.evaluate_dataset(
         dataset_path="datasets/train/humans",
         expected_label=True
     )
 
-    # Dataset containing no humans
     detector.evaluate_dataset(
         dataset_path="datasets/train/nohumans",
         expected_label=False

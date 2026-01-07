@@ -5,9 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileInput = document.getElementById("fileInput");
   const uploadSubtext = document.querySelector(".upload-subtext");
 
-  // -----------------------------
-  // Show selected file name
-  // -----------------------------
   fileInput.addEventListener("change", () => {
     if (fileInput.files.length > 0) {
       uploadSubtext.textContent = fileInput.files[0].name;
@@ -16,9 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // -----------------------------
-  // Handle form submission
-  // -----------------------------
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
