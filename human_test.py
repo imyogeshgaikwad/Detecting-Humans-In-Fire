@@ -42,6 +42,7 @@ class HumanTrainer:
         print(f"Accuracy: {accuracy:.2f}% ({correct}/{total})\n")
 
 
+
 if __name__ == "__main__":
     detector = HumanTrainer(conf_threshold=0.5)
 

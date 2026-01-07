@@ -9,14 +9,12 @@ import os
 
 app = Flask(__name__)
 
-
 FIRE_MODEL_PATH = "model/fire_model.h5"
 IMG_SIZE = (224, 224)
 FIRE_THRESHOLD = 0.90
 
 fire_model = load_model(FIRE_MODEL_PATH)
 human_model = YOLO('yolov8n.pt') 
-
 
 @app.route('/')
 def home():
@@ -56,7 +54,6 @@ def detect():
 
     return jsonify(result)
 
-
 def preprocess_image(file, img_size=IMG_SIZE):
 
     img = Image.open(file).convert("RGB")
@@ -65,7 +62,6 @@ def preprocess_image(file, img_size=IMG_SIZE):
     img_array = np.expand_dims(img_array, axis=0)
     img_array = preprocess_input(img_array)
     return img_array
-
 
 if __name__ == '__main__':
     app.run()
